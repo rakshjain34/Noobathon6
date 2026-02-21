@@ -9,7 +9,7 @@ const MUTED_COLORS = {
   medical: "#5a5348",
 };
 
-function ResourceChart({ data, accentColor }) {
+function ResourceChart({ data, accentColor, listenMode, onSpeak }) {
   const headingColor = accentColor || "#6b6358";
 
   const chartData = {
@@ -30,6 +30,12 @@ function ResourceChart({ data, accentColor }) {
     maintainAspectRatio: false,
     layout: { padding: 0 },
     cutout: "62%",
+    onClick: (event, elements) => {
+      if (!listenMode || !onSpeak || elements.length === 0) return;
+      const idx = elements[0].index;
+      const d = data[idx];
+      if (d) onSpeak(`Resource allocation. ${d.label}: ${d.value} units.`);
+    },
     plugins: {
       legend: { display: false },
       tooltip: {
@@ -58,7 +64,14 @@ function ResourceChart({ data, accentColor }) {
           Summary
         </div>
         {data.map((d) => (
-          <div key={d.label} className="text-[#6b6358]">
+          <div
+            key={d.label}
+            className={`text-[#6b6358] ${listenMode ? "cursor-pointer hover:opacity-90" : ""}`}
+            role={listenMode ? "button" : undefined}
+            tabIndex={listenMode ? 0 : undefined}
+            onClick={() => listenMode && onSpeak?.(`${d.label}: ${d.value} units.`)}
+            onKeyDown={(e) => listenMode && onSpeak && (e.key === "Enter" || e.key === " ") && onSpeak(`${d.label}: ${d.value} units.`)}
+          >
             {d.label}: {d.value} units
           </div>
         ))}

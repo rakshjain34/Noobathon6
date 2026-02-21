@@ -9,7 +9,7 @@ const MUTED_COLORS = {
   medical: "#5a5348",
 };
 
-function ResourceScarcityChart({ zone }) {
+function ResourceScarcityChart({ zone, listenMode, onSpeak }) {
   if (!zone?.resources) {
     return (
       <div className="flex h-full flex-col items-center justify-center font-mono text-xs text-secondary">
@@ -44,6 +44,12 @@ function ResourceScarcityChart({ zone }) {
     maintainAspectRatio: false,
     layout: { padding: 0 },
     cutout: "62%",
+    onClick: (event, elements) => {
+      if (!listenMode || !onSpeak || elements.length === 0) return;
+      const idx = elements[0].index;
+      const d = data[idx];
+      if (d) onSpeak(`Resource scarcity ${zone.name}. ${d.label}: ${d.value} percent.`);
+    },
     plugins: {
       legend: { display: false },
       tooltip: {
@@ -58,7 +64,13 @@ function ResourceScarcityChart({ zone }) {
 
   return (
     <div className="flex h-full flex-col">
-      <h3 className="mb-1.5 shrink-0 font-mono text-xs uppercase tracking-wider text-[#6b6358]">
+      <h3
+        className={`mb-1.5 shrink-0 font-mono text-xs uppercase tracking-wider text-[#6b6358] ${listenMode ? "cursor-pointer hover:opacity-90" : ""}`}
+        role={listenMode ? "button" : undefined}
+        tabIndex={listenMode ? 0 : undefined}
+        onClick={() => listenMode && onSpeak?.(`Resource scarcity for ${zone.name}.`)}
+        onKeyDown={(e) => listenMode && onSpeak && (e.key === "Enter" || e.key === " ") && onSpeak(`Resource scarcity for ${zone.name}.`)}
+      >
         Resource Scarcity — {zone.name}
       </h3>
       <div className="min-h-0 flex-1">
@@ -66,7 +78,14 @@ function ResourceScarcityChart({ zone }) {
       </div>
       <div className="mt-1.5 shrink-0 border-t border-[#2d2a24] pt-1.5 font-mono text-[10px] text-[#6b6358]">
         {data.map((d) => (
-          <div key={d.label}>
+          <div
+            key={d.label}
+            role={listenMode ? "button" : undefined}
+            tabIndex={listenMode ? 0 : undefined}
+            className={listenMode ? "cursor-pointer hover:opacity-90" : ""}
+            onClick={() => listenMode && onSpeak?.(`${d.label}: ${d.value} percent.`)}
+            onKeyDown={(e) => listenMode && onSpeak && (e.key === "Enter" || e.key === " ") && onSpeak(`${d.label}: ${d.value} percent.`)}
+          >
             {d.label}: {d.value}%
           </div>
         ))}

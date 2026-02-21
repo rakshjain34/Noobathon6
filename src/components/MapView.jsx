@@ -56,7 +56,7 @@ function ArcadeIcon() {
   });
 }
 
-function MapView({ zones, allZones, role, listenMode }) {
+function MapView({ zones, allZones, role, listenMode, onSpeakZone, onZoneMissionClick }) {
   const mapRef = useRef(null);
   const mapInstanceRef = useRef(null);
   const layersRef = useRef([]);
@@ -150,6 +150,9 @@ function MapView({ zones, allZones, role, listenMode }) {
 
       const isArcade = zone.type === "arcade";
 
+      const speakZone = listenMode && onSpeakZone ? () => onSpeakZone(zone) : null;
+      const openMission = onZoneMissionClick ? () => onZoneMissionClick(zone) : null;
+
       if (isArcade) {
         const arcadeMarker = L.marker(zone.coordinates, {
           icon: ArcadeIcon(),
@@ -160,6 +163,8 @@ function MapView({ zones, allZones, role, listenMode }) {
         );
         arcadeMarker.on("mouseover", () => arcadeMarker._icon?.classList.add("map-marker-hover"));
         arcadeMarker.on("mouseout", () => arcadeMarker._icon?.classList.remove("map-marker-hover"));
+        if (speakZone) arcadeMarker.on("click", speakZone);
+        if (openMission) arcadeMarker.on("click", openMission);
         layers.push({ remove: () => arcadeMarker.remove() });
       } else {
         const marker = L.marker(zone.coordinates).addTo(map);
@@ -169,6 +174,8 @@ function MapView({ zones, allZones, role, listenMode }) {
         );
         marker.on("mouseover", () => marker._icon?.classList.add("map-marker-hover"));
         marker.on("mouseout", () => marker._icon?.classList.remove("map-marker-hover"));
+        if (speakZone) marker.on("click", speakZone);
+        if (openMission) marker.on("click", openMission);
         layers.push({ remove: () => marker.remove() });
       }
 
@@ -180,6 +187,8 @@ function MapView({ zones, allZones, role, listenMode }) {
         radius,
         className: `heat-zone heat-zone--${heatTier}${isOverrun ? " heat-zone--glow" : ""}`,
       }).addTo(map);
+      if (speakZone) circle.on("click", speakZone);
+      if (openMission) circle.on("click", openMission);
       layers.push({ remove: () => circle.remove() });
 
       if (isOverrun) {
@@ -240,7 +249,7 @@ function MapView({ zones, allZones, role, listenMode }) {
       map.remove();
       mapInstanceRef.current = null;
     };
-  }, [zones, allZones, role, listenMode]);
+  }, [zones, allZones, role, listenMode, onSpeakZone, onZoneMissionClick]);
 
   return (
     <div className="relative h-full w-full overflow-hidden map-hud-wrapper">

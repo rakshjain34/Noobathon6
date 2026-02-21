@@ -18,7 +18,7 @@ ChartJS.register(
   Filler
 );
 
-function InfectionChart({ data, accentColor, latestByZone, title = "7-Day Infection Trend" }) {
+function InfectionChart({ data, accentColor, latestByZone, title = "7-Day Infection Trend", listenMode, onSpeak }) {
   const primaryColor = accentColor || "#6b6358";
   const lastValue = data?.datasets?.[0]?.data?.slice(-1)[0];
 
@@ -41,6 +41,13 @@ function InfectionChart({ data, accentColor, latestByZone, title = "7-Day Infect
     responsive: true,
     maintainAspectRatio: false,
     layout: { padding: { top: 4, right: 4, bottom: 0, left: 0 } },
+    onClick: (event, elements) => {
+      if (!listenMode || !onSpeak || elements.length === 0) return;
+      const idx = elements[0].index;
+      const label = data?.labels?.[idx];
+      const value = data?.datasets?.[0]?.data?.[idx];
+      if (label != null && value != null) onSpeak(`Infection forecast. ${label}: ${value} percent.`);
+    },
     plugins: {
       legend: { display: false },
       tooltip: {
@@ -82,7 +89,14 @@ function InfectionChart({ data, accentColor, latestByZone, title = "7-Day Infect
       {summaryItems.length > 0 && (
         <div className="mt-1.5 shrink-0 border-t border-[#2d2a24] pt-1.5 font-mono text-[10px] text-[#6b6358]">
           {summaryItems.map(({ name, value }) => (
-            <div key={name}>
+            <div
+              key={name}
+              role={listenMode ? "button" : undefined}
+              tabIndex={listenMode ? 0 : undefined}
+              className={listenMode ? "cursor-pointer hover:opacity-90" : ""}
+              onClick={() => listenMode && onSpeak?.(`${name}: ${value} percent.`)}
+              onKeyDown={(e) => listenMode && onSpeak && (e.key === "Enter" || e.key === " ") && onSpeak(`${name}: ${value} percent.`)}
+            >
               {name}: {value}%
             </div>
           ))}

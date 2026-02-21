@@ -28,8 +28,14 @@ function StatusBar({ label, value, level, showRiskLabel }) {
   );
 }
 
-function Sidebar({ config, accentColor, listenMode, onListenModeChange }) {
+function Sidebar({ config, accentColor, listenMode, onListenModeChange, onSpeakSection }) {
   const navigate = useNavigate();
+  const handleSpeak = (e, text) => {
+    if (listenMode && onSpeakSection && text) {
+      e.preventDefault();
+      onSpeakSection(text);
+    }
+  };
 
   const handleLogout = () => {
     localStorage.removeItem("turningPoint_role");
@@ -56,7 +62,13 @@ function Sidebar({ config, accentColor, listenMode, onListenModeChange }) {
           {config.sidebarNote}
         </p>
         {config.objective && (
-          <div className="border-l-2 border-border pl-3">
+          <div
+            role={listenMode ? "button" : undefined}
+            tabIndex={listenMode ? 0 : undefined}
+            onClick={(e) => handleSpeak(e, config.objective)}
+            onKeyDown={(e) => listenMode && (e.key === "Enter" || e.key === " ") && handleSpeak(e, config.objective)}
+            className={`border-l-2 border-border pl-3 ${listenMode ? "cursor-pointer focus:outline-none focus:ring-1 focus:ring-inset focus:ring-primary/30" : ""}`}
+          >
             <p className="font-mono text-[10px] uppercase tracking-wider text-secondary">
               Objective
             </p>
@@ -65,24 +77,44 @@ function Sidebar({ config, accentColor, listenMode, onListenModeChange }) {
             </p>
           </div>
         )}
-        <StatusBar
-          label="Health Status"
-          value={config.healthStatus}
-          level={config.healthLevel}
-        />
-        <StatusBar
-          label="Infection Risk"
-          value={config.infectionRisk}
-          level={config.infectionLevel}
-          showRiskLabel
-        />
+        <div
+          role={listenMode ? "button" : undefined}
+          tabIndex={listenMode ? 0 : undefined}
+          onClick={(e) => handleSpeak(e, `Health status ${config.healthStatus} percent`)}
+          onKeyDown={(e) => listenMode && (e.key === "Enter" || e.key === " ") && handleSpeak(e, `Health status ${config.healthStatus} percent`)}
+          className={listenMode ? "cursor-pointer focus:outline-none focus:ring-1 focus:ring-inset focus:ring-primary/30 rounded" : ""}
+        >
+          <StatusBar
+            label="Health Status"
+            value={config.healthStatus}
+            level={config.healthLevel}
+          />
+        </div>
+        <div
+          role={listenMode ? "button" : undefined}
+          tabIndex={listenMode ? 0 : undefined}
+          onClick={(e) => handleSpeak(e, `Infection risk ${config.infectionRisk} percent`)}
+          onKeyDown={(e) => listenMode && (e.key === "Enter" || e.key === " ") && handleSpeak(e, `Infection risk ${config.infectionRisk} percent`)}
+          className={listenMode ? "cursor-pointer focus:outline-none focus:ring-1 focus:ring-inset focus:ring-primary/30 rounded" : ""}
+        >
+          <StatusBar
+            label="Infection Risk"
+            value={config.infectionRisk}
+            level={config.infectionLevel}
+            showRiskLabel
+          />
+        </div>
       </div>
       <div className="space-y-2 border-b border-border p-4">
         <label className="flex cursor-pointer items-center gap-2 font-mono text-xs text-secondary">
           <input
             type="checkbox"
             checked={listenMode}
-            onChange={(e) => onListenModeChange(e.target.checked)}
+            onChange={(e) => {
+              const on = e.target.checked;
+              onListenModeChange(on);
+              if (on && onSpeakSection) onSpeakSection("Listen mode on. Click a zone on the map or in the dropdown to hear it read.");
+            }}
             className="h-3 w-3 border-border bg-card accent-survivor"
           />
           Listen Mode

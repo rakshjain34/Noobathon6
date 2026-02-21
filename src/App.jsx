@@ -3,6 +3,8 @@ import Landing from "./pages/Landing";
 import BootScreen from "./components/BootScreen";
 import ArcadeCalibration from "./components/ArcadeCalibration";
 import Dashboard from "./pages/Dashboard";
+import { GameStateProvider } from "./context/GameStateContext";
+import GameEngine from "./components/GameEngine";
 
 function ProtectedRoute({ children }) {
   const role = localStorage.getItem("turningPoint_role");
@@ -36,7 +38,11 @@ function App() {
             path="/dashboard"
             element={
               <ProtectedRoute>
-                <Dashboard />
+                <GameStateProvider>
+                  <GameEngine>
+                    <Dashboard />
+                  </GameEngine>
+                </GameStateProvider>
               </ProtectedRoute>
             }
           />
