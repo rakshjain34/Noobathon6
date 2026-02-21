@@ -18,7 +18,7 @@ ChartJS.register(
   Filler
 );
 
-function InfectionChart({ data, accentColor, latestByZone }) {
+function InfectionChart({ data, accentColor, latestByZone, title = "7-Day Infection Trend" }) {
   const primaryColor = accentColor || "#6b6358";
   const lastValue = data?.datasets?.[0]?.data?.slice(-1)[0];
 
@@ -74,7 +74,7 @@ function InfectionChart({ data, accentColor, latestByZone }) {
   return (
     <div className="flex h-full flex-col">
       <h3 className="mb-1.5 shrink-0 font-mono text-xs uppercase tracking-wider text-[#6b6358]">
-        7-Day Infection Trend
+        {title}
       </h3>
       <div className="min-h-0 flex-1">
         <Line data={chartData} options={options} />

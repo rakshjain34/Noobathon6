@@ -1,17 +1,23 @@
 import { useNavigate } from "react-router-dom";
 
-function StatusBar({ label, value, level }) {
+const RISK_LABELS = { low: "Low", medium: "Medium", high: "Critical", critical: "Critical" };
+
+function StatusBar({ label, value, level, showRiskLabel }) {
   const levelColor =
-    level === "critical"
+    level === "critical" || level === "high"
       ? "bg-[#7a6348]"
-      : level === "high"
+      : level === "medium"
         ? "bg-[#6b5f48]"
-        : level === "medium"
-          ? "bg-[#4d4a40]"
-          : "bg-border";
+        : "bg-[#4d4a40]";
+  const riskLabel = showRiskLabel ? RISK_LABELS[level] || level : null;
   return (
     <div className="font-mono">
-      <p className="text-xs uppercase tracking-wider text-secondary">{label}</p>
+      <div className="flex items-center justify-between">
+        <p className="text-xs uppercase tracking-wider text-secondary">{label}</p>
+        {riskLabel && (
+          <span className="text-[10px] uppercase tracking-wider text-secondary">{riskLabel}</span>
+        )}
+      </div>
       <div className="mt-1 h-1.5 w-full overflow-hidden border border-border bg-card">
         <div
           className={`h-full transition-all duration-300 ${levelColor}`}
@@ -28,6 +34,7 @@ function Sidebar({ config, accentColor, listenMode, onListenModeChange }) {
   const handleLogout = () => {
     localStorage.removeItem("turningPoint_role");
     localStorage.removeItem("turningPoint_location");
+    localStorage.removeItem("turningPoint_calibrated");
     navigate("/");
   };
 
@@ -48,6 +55,16 @@ function Sidebar({ config, accentColor, listenMode, onListenModeChange }) {
         <p className="font-mono text-xs leading-relaxed text-secondary">
           {config.sidebarNote}
         </p>
+        {config.objective && (
+          <div className="border-l-2 border-border pl-3">
+            <p className="font-mono text-[10px] uppercase tracking-wider text-secondary">
+              Objective
+            </p>
+            <p className="mt-0.5 font-mono text-xs text-primary">
+              {config.objective}
+            </p>
+          </div>
+        )}
         <StatusBar
           label="Health Status"
           value={config.healthStatus}
@@ -57,6 +74,7 @@ function Sidebar({ config, accentColor, listenMode, onListenModeChange }) {
           label="Infection Risk"
           value={config.infectionRisk}
           level={config.infectionLevel}
+          showRiskLabel
         />
       </div>
       <div className="space-y-2 border-b border-border p-4">

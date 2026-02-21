@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Landing from "./pages/Landing";
 import BootScreen from "./components/BootScreen";
+import ArcadeCalibration from "./components/ArcadeCalibration";
 import Dashboard from "./pages/Dashboard";
 
 function ProtectedRoute({ children }) {
@@ -20,6 +21,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <BootScreen />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/calibration"
+            element={
+              <ProtectedRoute>
+                <ArcadeCalibration />
               </ProtectedRoute>
             }
           />

@@ -13,6 +13,7 @@ export const ZONES = [
   {
     id: "zone-bravo",
     name: "Bravo Outpost",
+    linkedTo: "zone-foxtrot",
     coordinates: [40.7128, -74.006],
     infectionTrend: [8, 10, 14, 19, 21, 24, 28],
     resources: { ammo: 62, food: 51, medical: 38 },
@@ -24,6 +25,7 @@ export const ZONES = [
   {
     id: "zone-charlie",
     name: "Charlie Perimeter",
+    linkedTo: "zone-echo",
     coordinates: [35.6762, 139.6503],
     infectionTrend: [25, 32, 38, 45, 58, 65, 72],
     resources: { ammo: 22, food: 18, medical: 12 },
@@ -46,6 +48,7 @@ export const ZONES = [
   {
     id: "zone-echo",
     name: "Echo Quarantine",
+    linkedTo: "zone-charlie",
     coordinates: [-33.8688, 151.2093],
     infectionTrend: [42, 55, 68, 78, 85, 91, 95],
     resources: { ammo: 15, food: 8, medical: 5 },
@@ -57,6 +60,7 @@ export const ZONES = [
   {
     id: "zone-foxtrot",
     name: "Foxtrot Safe House",
+    linkedTo: "zone-bravo",
     coordinates: [34.0522, -118.2437],
     infectionTrend: [3, 5, 6, 8, 9, 10, 11],
     resources: { ammo: 55, food: 42, medical: 38 },

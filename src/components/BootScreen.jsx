@@ -21,7 +21,7 @@ function BootScreen() {
       );
     }
     const redirectTimer = setTimeout(() => {
-      navigate("/dashboard", { replace: true });
+      navigate("/calibration", { replace: true });
     }, 3000);
 
     return () => {

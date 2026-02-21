@@ -71,3 +71,269 @@ canvas {
   opacity: 0.035;
   pointer-events: none;
 }
+
+[data-theme="survivor"] .grain-overlay {
+  opacity: 0.05;
+}
+
+[data-theme="firefly"] {
+  --color-accent: #c4742a;
+}
+
+[data-theme="military"] .panel-texture {
+  opacity: 0.02;
+}
+
+.map-scan-line {
+  position: absolute;
+  inset: 0;
+  z-index: 400;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    transparent 48%,
+    rgba(156, 138, 60, 0.04) 50%,
+    transparent 52%,
+    transparent 100%
+  );
+  animation: map-scan 8s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes map-scan {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
+}
+
+.map-container.leaflet-container {
+  background: #0d0c0a !important;
+}
+
+.map-container .leaflet-control-attribution {
+  display: none !important;
+}
+
+/* ----- Game HUD map: heat zones ----- */
+.map-container .heat-zone path {
+  transition: fill-opacity 0.4s ease, filter 0.4s ease;
+}
+
+.map-container .heat-zone--danger path {
+  animation: heat-pulse-danger 2.2s ease-in-out infinite;
+}
+
+.map-container .heat-zone--caution path {
+  animation: heat-pulse-caution 2.5s ease-in-out infinite;
+}
+
+.map-container .heat-zone--safe path {
+  animation: heat-pulse-safe 3s ease-in-out infinite;
+}
+
+.map-container .heat-zone--glow path {
+  filter: drop-shadow(0 0 8px currentColor);
+}
+
+.map-container .heat-zone--pulse path {
+  animation: heat-glow 1.8s ease-in-out infinite;
+}
+
+@keyframes heat-pulse-danger {
+  0%, 100% { fill-opacity: 0.22; }
+  50% { fill-opacity: 0.35; }
+}
+
+@keyframes heat-pulse-caution {
+  0%, 100% { fill-opacity: 0.14; }
+  50% { fill-opacity: 0.22; }
+}
+
+@keyframes heat-pulse-safe {
+  0%, 100% { fill-opacity: 0.12; }
+  50% { fill-opacity: 0.18; }
+}
+
+@keyframes heat-glow {
+  0%, 100% { opacity: 0.5; fill-opacity: 0.06; }
+  50% { opacity: 1; fill-opacity: 0.12; }
+}
+
+/* ----- Arcade custom animated icon ----- */
+.arcade-marker-icon {
+  background: none !important;
+  border: none !important;
+}
+
+.arcade-pin {
+  position: relative;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.arcade-pin__ring,
+.arcade-pin__ring--2 {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  border: 2px solid rgba(74, 93, 58, 0.8);
+  border-radius: 50%;
+  animation: arcade-ring-pulse 2s ease-in-out infinite;
+}
+
+.arcade-pin__ring--2 {
+  width: 32px;
+  height: 32px;
+  animation-delay: 0.5s;
+  animation-duration: 2.2s;
+}
+
+.arcade-pin__core {
+  width: 10px;
+  height: 10px;
+  background: #4a5d3a;
+  border-radius: 50%;
+  box-shadow: 0 0 12px rgba(74, 93, 58, 0.8);
+  animation: arcade-core-glow 1.5s ease-in-out infinite;
+}
+
+@keyframes arcade-ring-pulse {
+  0%, 100% { transform: scale(0.8); opacity: 0.6; }
+  50% { transform: scale(1.1); opacity: 1; }
+}
+
+@keyframes arcade-core-glow {
+  0%, 100% { box-shadow: 0 0 8px rgba(74, 93, 58, 0.6); }
+  50% { box-shadow: 0 0 18px rgba(74, 93, 58, 1); }
+}
+
+/* ----- Fog overlay ----- */
+.map-fog-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 350;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(13, 12, 10, 0.15) 30%,
+    rgba(13, 12, 10, 0.25) 50%,
+    rgba(13, 12, 10, 0.15) 70%,
+    transparent 100%
+  );
+  animation: fog-drift 20s ease-in-out infinite;
+}
+
+@keyframes fog-drift {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
+}
+
+/* ----- Zone shade (vignette) ----- */
+.map-zone-shade {
+  position: absolute;
+  inset: 0;
+  z-index: 380;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse 80% 80% at 50% 50%,
+    transparent 40%,
+    rgba(0, 0, 0, 0.25) 100%
+  );
+}
+
+/* ----- Trail line animation ----- */
+.map-container .map-trail-line path {
+  stroke-dasharray: 10 10;
+  animation: trail-dash 1.5s linear infinite;
+}
+
+@keyframes trail-dash {
+  to { stroke-dashoffset: -40; }
+}
+
+/* ----- Entity blip ----- */
+.map-container .map-entity-blip path {
+  animation: entity-blink 0.8s ease-in-out infinite;
+}
+
+@keyframes entity-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* ----- Popup HUD ----- */
+.map-container .map-popup-hud .leaflet-popup-content-wrapper {
+  background: #1a1816;
+  border: 1px solid #3d3832;
+  border-radius: 0;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.map-container .map-popup-hud .leaflet-popup-tip {
+  background: #1a1816;
+}
+
+.map-container .map-popup-hud.leaflet-popup {
+  transition: opacity 0.2s ease;
+}
+
+.map-popup-content {
+  font-family: "JetBrains Mono", monospace;
+  padding: 10px 12px;
+  min-width: 180px;
+}
+
+.map-popup-title {
+  font-weight: 600;
+  font-size: 14px;
+  color: #c4b8a8;
+  margin-bottom: 6px;
+}
+
+.map-popup-risk {
+  margin-bottom: 4px;
+}
+
+.map-popup-risk span {
+  border: 1px solid #4a5d3a;
+  color: #4a5d3a;
+  padding: 2px 6px;
+  font-size: 9px;
+  font-weight: 600;
+}
+
+.map-popup-stat {
+  font-size: 11px;
+  color: #8e857a;
+}
+
+.map-popup-resources {
+  font-size: 10px;
+  color: #6b6358;
+  margin-top: 4px;
+}
+
+/* ----- Marker hover ----- */
+.map-container .map-marker-hover .arcade-pin__core,
+.map-container .leaflet-marker-icon.map-marker-hover {
+  transform: scale(1.15);
+  transition: transform 0.2s ease;
+}
+
+.map-container .leaflet-marker-icon.map-marker-hover {
+  z-index: 450;
+}
+
+/* ----- Grid subtle animation ----- */
+.map-grid-bg--animated {
+  animation: grid-fade 6s ease-in-out infinite;
+}
+
+@keyframes grid-fade {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.92; }
+}

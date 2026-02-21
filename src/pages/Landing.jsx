@@ -9,6 +9,13 @@ const STAGES = [
   { name: "Bloater", desc: "Final stage. Armored. Extreme threat." },
 ];
 
+const VACCINE_STATUS = {
+  phase: "Phase 2",
+  stage: "Clinical Trials",
+  progress: 34,
+  lastUpdate: "72h ago",
+};
+
 function Landing() {
   const [faction, setFaction] = useState("");
   const [location, setLocation] = useState("");
@@ -24,34 +31,53 @@ function Landing() {
   return (
     <div className="relative h-screen w-full overflow-hidden bg-base">
       <div className="grain-overlay absolute inset-0" aria-hidden />
-      <div className="relative flex h-full flex-col items-center justify-center px-6 py-12">
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#141210]/90" aria-hidden />
+      <div className="relative flex h-full flex-col items-center justify-center overflow-y-auto px-6 py-12">
         <div className="w-full max-w-2xl">
           <h1 className="font-heading text-4xl tracking-tight text-primary sm:text-5xl md:text-6xl">
             THE CORDYCEPS ARCHIVE
           </h1>
           <p className="mt-6 font-mono text-sm leading-relaxed text-secondary sm:text-base">
-            Cordyceps Brain Infection (CBI) has reshaped the world. This terminal
-            aggregates data from surviving outposts. Use it to track infection
-            spread, resource distribution, and faction operations. Access is
-            restricted by clearance level.
+            Cordyceps Brain Infection (CBI) is a fungal pathogen that invades the
+            central nervous system. Transmission occurs through airborne spores
+            and direct contact. The fungus progressively colonizes neural tissue,
+            altering host behaviour across distinct stages. This terminal aggregates
+            data from surviving outposts—infection spread, resource distribution,
+            and faction operations. Access restricted by clearance level.
           </p>
 
           <div className="mt-10 border-l-2 border-border pl-4">
             <p className="font-mono text-xs uppercase tracking-wider text-secondary">
               Infection progression
             </p>
-            <div className="mt-2 flex flex-wrap gap-x-6 gap-y-1 font-mono text-sm text-primary">
+            <div className="mt-2 flex flex-wrap gap-x-1 gap-y-2 sm:gap-x-2">
               {STAGES.map((s, i) => (
-                <span key={s.name}>
-                  {s.name}
-                  {i < STAGES.length - 1 && (
-                    <span className="mx-1 text-border">→</span>
-                  )}
-                </span>
+                <div
+                  key={s.name}
+                  className="flex flex-1 min-w-0 flex-col border border-border bg-card/50 px-2 py-1.5 sm:px-3"
+                >
+                  <span className="font-mono text-xs font-medium text-primary">{s.name}</span>
+                  <span className="font-mono text-[10px] text-secondary">{s.desc}</span>
+                </div>
               ))}
             </div>
-            <p className="mt-2 font-mono text-xs text-secondary">
-              Runner → Stalker → Clicker → Bloater
+          </div>
+
+          <div className="mt-10 border-l-2 border-border pl-4">
+            <p className="font-mono text-xs uppercase tracking-wider text-secondary">
+              Vaccine preparation
+            </p>
+            <p className="mt-1 font-mono text-xs text-primary">
+              {VACCINE_STATUS.phase} — {VACCINE_STATUS.stage}
+            </p>
+            <div className="mt-2 h-1 w-full overflow-hidden border border-border bg-card">
+              <div
+                className="h-full bg-military transition-all duration-500"
+                style={{ width: `${VACCINE_STATUS.progress}%` }}
+              />
+            </div>
+            <p className="mt-1 font-mono text-[10px] text-secondary">
+              {VACCINE_STATUS.progress}% · Last update: {VACCINE_STATUS.lastUpdate}
             </p>
           </div>
 
